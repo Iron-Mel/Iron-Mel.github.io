@@ -33,10 +33,11 @@
     .title{font-weight:700;text-align:center;color:#001f3f;}
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:50;visibility:hidden;opacity:0;transition:opacity .2s ease,visibility .2s;}
     .overlay.show{visibility:visible;opacity:1;}
-    .modal{background:white;padding:25px;border-radius:16px;max-width:420px;text-align:center;box-shadow:0 20px 50px rgba(0,255,255,0.3);}
+    .modal{background:white;padding:25px;border-radius:16px;max-width:90vw;max-height:90vh;overflow:auto;text-align:center;box-shadow:0 20px 50px rgba(0,255,255,0.3);}
     .modal h2{margin:0 0 8px 0;font-size:24px;color:#0072ff;text-shadow:0 0 10px #00ffea;}
     .modal p{margin:8px 0;font-size:14px;color:#001f3f;}
-    .actions{display:flex;gap:10px;justify-content:center;margin-top:16px;}
+    .modal-img{transition: transform 0.3s ease, box-shadow 0.3s ease; margin-bottom:12px; border-radius:12px; max-width:100%; height:auto; display:block; margin-left:auto; margin-right:auto;}
+    .actions{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
     footer{margin-top:auto;padding:20px 0 10px;width:100%;max-width:1100px;text-align:center;opacity:0.85;font-size:13px;color:#fff;text-shadow:0 0 5px #000;}
     .featured{width:100%;max-width:1000px;background:linear-gradient(135deg,#00ffea,#0072ff);border-radius:18px;padding:18px;text-align:center;box-shadow:0 10px 30px rgba(0,255,255,0.3);transition:all 0.3s;}
     .featured:hover{transform:scale(1.02);box-shadow:0 15px 45px rgba(0,255,255,0.6);}
@@ -63,7 +64,7 @@
       <h3>GUIRNALDAS VINTAGE</h3>
       <img src="https://i.postimg.cc/2ynSwDhk/GUIRNALDAS-VINTAGE.jpg" alt="Guirnaldas Vintage">
       <p>¡Ahora que empezo la temporada no te pueden faltar estas Guirnaldas vintage aptas para exterior e interior!, lámparas cada 1 metro, luces cálidas o frías. Disponibles en 5, 10, 15 y 20 metros. <strong>¡STOCK PERMANENTE!</strong></p>
-      <a href="https://wa.me/543537552759?text=Hola!+quiero+comprar:+Guirnaldas+Vintage" class="btn">LO QUIERO!</a>
+      <a href="https://wa.me/3537680211?text=Hola!+quiero+comprar:+Guirnaldas+Vintage" class="btn">LO QUIERO!</a>
     </section>
 
     <div class="button-container">
@@ -78,7 +79,7 @@
     <main class="products" id="productsContainer" role="list"></main>
 
     <footer>
-      <strong>IRON & DECO MEL</strong> ❤️ — por productos que no están en el catálogo consulte al Whatsapp o al Instagram <strong>@iron_y_deco_mel</strong>.
+      <strong>IRON & DECO MEL</strong> ❤️ — Estaremos añadiendo más cosas a la pagina, por productos que no están en el catálogo consulte al Whatsapp o al Instagram <strong>@iron_y_deco_mel</strong>.
     </footer>
   </div>
 
@@ -94,7 +95,7 @@
   </div>
 
   <script>
-    const whatsappNumber = '543537552759';
+    const whatsappNumber = '3537680211';
     const productos = [
       {nombre:'ARO DE LUZ', resumen:'Aro de luz ajustable y portátil.', img:'https://i.postimg.cc/76tTWvk4/ARO-DE-LUZ.jpg'},
       {nombre:'ASTRONAUTA PROJECTOR DE GALAXIAS', resumen:'Proyector de estrellas y galaxias con diseño de astronauta.', img:'https://i.postimg.cc/0j3DrTWn/ASTRONAUTA-PROJECTOR-DE-GALAXIAS.jpg'},
@@ -129,6 +130,19 @@
     function mostrarFicha(prod){
       document.getElementById('modal-title').textContent = prod.nombre.toUpperCase();
       document.getElementById('modal-desc').textContent = prod.resumen;
+
+      // Imagen más grande en modal ajustada
+      let modal = document.querySelector('.modal');
+      let existingImg = modal.querySelector('img.modal-img');
+      if(!existingImg){
+        const img = document.createElement('img');
+        img.className = 'modal-img';
+        modal.insertBefore(img, modal.firstChild.nextSibling);
+        existingImg = img;
+      }
+      existingImg.src = prod.img;
+      existingImg.alt = prod.nombre;
+
       document.getElementById('overlay').classList.add('show');
       productoSeleccionado = prod;
     }
