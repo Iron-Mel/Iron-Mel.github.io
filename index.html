@@ -33,7 +33,7 @@
     .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; margin-bottom: 40px; }
     .card { background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); overflow: hidden; transition: all 0.3s ease; text-align: center; padding-bottom: 10px; }
     .card:hover { transform: translateY(-6px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-    .card img { width: 100%; height: 180px; object-fit: contain; background: #f8f8f8; transition: transform 0.4s ease; }
+    .card img { width: 100%; height: 180px; object-fit: contain; background: #f88; background: #f8f8f8; transition: transform 0.4s ease; }
     .card:hover img { transform: scale(1.05); }
     .card .title { font-size: 16px; font-weight: 600; color: #0a2e57; margin: 12px 0 4px; }
     .card .desc { font-size: 14px; color: #555; padding: 0 10px; margin-bottom: 5px; }
@@ -81,18 +81,8 @@
       </div>
     </header>
 
-    <section class="featured" data-aos="zoom-in-up">
-      <h2>PRODUCTO DESTACADO</h2>
-      <h3>GUIRNALDAS VINTAGE</h3>
-      <img src="https://i.postimg.cc/2ynSwDhk/GUIRNALDAS-VINTAGE.jpg" alt="Guirnaldas Vintage">
-      <p>Guirnaldas vintage aptas para exterior e interior, lámparas cada 1 metro, luces cálidas o frías. Disponibles en 5, 10, 15 y 20 metros. STOCK PERMANENTE.</p>
-      <a href="https://wa.me/3537680211?text=Hola!+quiero+comprar:+Guirnaldas+Vintage" class="btn primary">AVERIGUAR</a>
-    </section>
-
     <div class="button-container" data-aos="fade-up">
-      <a href="#" class="btn secondary">Nuestra historia...</a>
-      <a href="#" class="btn secondary">Contactos</a>
-    </div>
+      </div>
 
     <div class="search-container" data-aos="fade-up">
       <input type="text" id="searchInput" placeholder="Busca tu producto..." onkeyup="buscarProducto()">
@@ -107,7 +97,7 @@
 
     <footer data-aos="fade-up">
       <strong>IRON & DECO MEL</strong> — Por productos que estan fuera del catálogo, consulte vía Whatsapp o Instagram <strong>@iron_y_deco_mel</strong>.<br><br>
-      <button class="btn secondary" onclick="document.getElementById('loginModal').style.display='flex'">⚙️ ADMIN PANEL</button>
+      <button class="btn secondary" onclick="document.getElementById('loginModal').style.display='flex'">⚙️ ADMIN</button>
     </footer>
   </div>
 
@@ -131,13 +121,17 @@
         <label>CONTRASEÑA</label>
         <input type="password" id="adminPass" placeholder="Contraseña">
       </div>
+      <div class="input-group" style="display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="rememberMe" style="width: auto; cursor: pointer;">
+        <label for="rememberMe" style="margin: 0; cursor: pointer; text-transform: none;">Recordarme en este dispositivo</label>
+      </div>
       <button class="login-btn" onclick="verificarLogin()">Ingresar</button>
       <button class="cancel-btn" onclick="document.getElementById('loginModal').style.display='none'">Cancelar</button>
     </div>
   </div>
 
   <div id="adminPanelContainer">
-    <h2>🚀 PANEL DE CONTROL ADMIN ¡GRATIS! ¡JAJAJA!</h2>
+    <h2>🚀 PANEL DE CONTROL ADMIN</h2>
     <div class="admin-nav">
       <button class="btn primary" onclick="mostrarSeccion('secAgregar')">➕ AGREGAR PRODUCTO</button>
       <button class="btn secondary" onclick="mostrarSeccion('secModificar')">✏️ MODIFICAR PRODUCTO</button>
@@ -147,8 +141,8 @@
     <div id="secAgregar" class="admin-section active">
       <h3>➕ NUEVO PRODUCTO</h3>
       <div class="admin-form-group">
-        <label>LINK DE LA IMAGEN (Subila a Postimages.org y pegá el Direct Link acá)</label>
-        <input type="text" id="addImgLink" placeholder="Ej: https://i.postimg.cc/76tTWvk4/ARO-DE-LUZ.jpg">
+        <label>SELECCIONAR IMAGEN (Se subirá a Cloudinary automáticamente)</label>
+        <input type="file" id="addImgFile" accept="image/*">
       </div>
       <div class="admin-form-group">
         <label>TÍTULO</label>
@@ -182,8 +176,9 @@
       </div>
       <div id="modFormArea" style="display:none;">
         <div class="admin-form-group">
-          <label>LINK DE LA IMAGEN</label>
-          <input type="text" id="modImgLink">
+          <label>CAMBIAR IMAGEN (Dejar vacío para conservar la actual)</label>
+          <input type="file" id="modImgFile" accept="image/*">
+          <p id="currentImgUrl" style="font-size: 11px; color: #777; margin-top: 5px; word-break: break-all;"></p>
         </div>
         <div class="admin-form-group">
           <label>TÍTULO</label>
@@ -229,12 +224,47 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // DATOS DE CLOUDINARY
+    const CLOUD_NAME = "dasqigyr0"; // Cloudinary Name asignado
+    const UPLOAD_PRESET = "bazar-imagenes"; // Upload Preset asignado
+
     AOS.init({ duration: 1000, once: true });
     const whatsappNumber = '3537680211';
     
     let productos = [];
     const container = document.getElementById('productsContainer');
     const noResultsMsg = document.getElementById('noResultsMessage');
+
+    // FUNCIÓN PARA SUBIR A CLOUDINARY
+    async function uploadToCloudinary(fileElementId) {
+      const fileInput = document.getElementById(fileElementId);
+      if (!fileInput.files || fileInput.files.length === 0) return null;
+
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', UPLOAD_PRESET);
+
+      // Petición a la API de Cloudinary mediante FormData
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) throw new Error("Fallo en la subida a Cloudinary");
+      
+      const data = await response.json();
+      return data.secure_url; // Retorna la URL pública devuelta por Cloudinary
+    }
+
+    // AUTO LOGIN SI EXISTE "RECORDARME"
+    window.addEventListener('load', () => {
+        if(localStorage.getItem('adminIronMel') === 'true') {
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('adminPanelContainer').style.display = 'block';
+            cargarSelectModificar();
+        }
+    });
 
     window.buscarProducto = () => {
       const query = document.getElementById('searchInput').value.toLowerCase();
@@ -251,17 +281,21 @@
     window.verificarLogin = () => {
       const user = document.getElementById('adminUser').value;
       const pass = document.getElementById('adminPass').value;
-      if(user === 'BAUTI' && pass === 'ironmel') {
+      const remember = document.getElementById('rememberMe').checked;
+
+      if(user === 'admin' && pass === '2026') {
+        if(remember) localStorage.setItem('adminIronMel', 'true'); // Guardar sesión si se marcó recordarme
         document.getElementById('loginModal').style.display = 'none';
         document.getElementById('mainApp').style.display = 'none';
         document.getElementById('adminPanelContainer').style.display = 'block';
         cargarSelectModificar();
       } else {
-        alert("❌ ¡DATOS INCORRECTOS! JAJAJA INTENTÁ DE NUEVO.");
+        alert("❌ ¡DATOS INCORRECTOS! INTENTÁ DE NUEVO.");
       }
     };
 
     window.cerrarSesion = () => {
+      localStorage.removeItem('adminIronMel'); // Borrar rastro de sesión
       document.getElementById('adminPanelContainer').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
       document.getElementById('adminUser').value = '';
@@ -279,11 +313,12 @@
       const prod = productos.find(p => p.id === idSel);
       if(prod) {
         document.getElementById('modFormArea').style.display = 'block';
-        document.getElementById('modImgLink').value = prod.img;
         document.getElementById('modTitulo').value = prod.nombre;
         document.getElementById('modDesc').value = prod.resumen;
         document.getElementById('modPrecio').value = prod.precio || '';
         document.getElementById('modStock').value = prod.stock || 'si';
+        document.getElementById('currentImgUrl').innerText = "URL actual: " + prod.img;
+        document.getElementById('modImgFile').value = ""; // Limpiar input file
       }
     };
 
@@ -328,49 +363,59 @@
         });
         mostrarProductos(productos);
       } catch (e) {
-        console.log("Error al leer de Firestore, revisá las reglas de la base de datos 😂", e);
+        console.log("Error al leer de Firestore", e);
       }
     }
 
     loadFirebaseProducts();
 
-    // GUARDAR NUEVO USANDO LINK DIRECTO 💾
+    // GUARDAR NUEVO USANDO CLOUDINARY 💾
     document.getElementById('btnGuardarNuevo').addEventListener('click', async () => {
       const btn = document.getElementById('btnGuardarNuevo');
-      btn.innerText = "⏳ GUARDANDO...";
+      btn.innerText = "⏳ SUBIENDO IMAGEN...";
       try {
-        let imgUrl = document.getElementById('addImgLink').value || "https://i.postimg.cc/4NyTgDRM/LOGO-IRON-MEL.jpg";
+        // Subida automática a Cloudinary antes de guardar en Firestore
+        let imgUrl = await uploadToCloudinary('addImgFile'); 
+        
+        // Si no se seleccionó imagen, usar una por defecto
+        if (!imgUrl) imgUrl = "https://i.postimg.cc/4NyTgDRM/LOGO-IRON-MEL.jpg";
         
         const nuevoProd = {
           nombre: document.getElementById('addTitulo').value,
           resumen: document.getElementById('addDesc').value,
           precio: Number(document.getElementById('addPrecio').value),
           stock: document.getElementById('addStock').value,
-          img: imgUrl
+          img: imgUrl // Guardar la URL de Cloudinary en el campo img de Firestore
         };
 
         await addDoc(collection(db, "productos"), nuevoProd);
         alert("✅ ¡PRODUCTO AGREGADO A LA BASE DE DATOS!");
         location.reload();
       } catch(e) {
-        alert("❌ ERROR AL GUARDAR TEXTOS: " + e.message);
+        alert("❌ ERROR: " + e.message);
       }
       btn.innerText = "💾 GUARDAR CAMBIOS";
     });
 
-    // MODIFICAR USANDO LINK DIRECTO ✏️
+    // MODIFICAR USANDO CLOUDINARY ✏️
     document.getElementById('btnGuardarMod').addEventListener('click', async () => {
       const idSel = document.getElementById('modSelectProd').value;
       const btn = document.getElementById('btnGuardarMod');
+      const currentProd = productos.find(p => p.id === idSel);
+      
       btn.innerText = "⏳ ACTUALIZANDO...";
       try {
         const prodRef = doc(db, "productos", idSel);
+        
+        // Verificar si se seleccionó una nueva imagen para subir
+        let newImgUrl = await uploadToCloudinary('modImgFile');
+        
         let updateData = {
           nombre: document.getElementById('modTitulo').value,
           resumen: document.getElementById('modDesc').value,
           precio: Number(document.getElementById('modPrecio').value),
           stock: document.getElementById('modStock').value,
-          img: document.getElementById('modImgLink').value
+          img: newImgUrl ? newImgUrl : currentProd.img // Si hay nueva URL usarla, sino mantener la actual
         };
 
         await updateDoc(prodRef, updateData);
