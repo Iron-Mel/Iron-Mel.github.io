@@ -73,7 +73,7 @@
   <div class="app" id="mainApp" data-aos="fade-up">
     <header data-aos="zoom-in">
       <div style="display: flex; align-items: center; gap: 12px;">
-        <img class="logo" src="https://i.postimg.cc/4NyTgDRM/LOGO-IRON-MEL.jpg" alt="Logo Iron & Deco Mel">
+        <img class="logo" src="https://i.postimg.cc/NFqG2R6W/Whats-App-Image-2026-06-08-at-21-48-55.jpg" alt="Logo Iron & Deco Mel">
         <div>
           <h1>IRON & DECO MEL</h1>
           <p class="subtitle">TODO EN BAZAR · CONSULTA POR MÁS PRODUCTOS</p>
@@ -97,7 +97,7 @@
 
     <footer data-aos="fade-up">
       <strong>IRON & DECO MEL</strong> — Por productos que estan fuera del catálogo, consulte vía Whatsapp o Instagram <strong>@iron_y_deco_mel</strong>.<br><br>
-      <button class="btn secondary" onclick="document.getElementById('loginModal').style.display='flex'">⚙️ ADMIN</button>
+      <button class="btn secondary" onclick="document.getElementById('loginModal').style.display='flex'">ADMIN</button>
     </footer>
   </div>
 
@@ -108,11 +108,11 @@
   <div class="modal-overlay" id="loginModal">
     <div class="login-box">
       <div class="login-header">
-        <img src="https://i.postimg.cc/4NyTgDRM/LOGO-IRON-MEL.jpg" alt="Logo" style="border-radius: 5px;">
+        <img src="https://i.postimg.cc/NFqG2R6W/Whats-App-Image-2026-06-08-at-21-48-55.jpg" alt="Logo" style="border-radius: 5px;">
         <h4>Iron & Deco Mel</h4>
       </div>
       <h2>Acceso Admin</h2>
-      <p>Ingresá tus credenciales</p>
+      <p>Ingresá tus datos</p>
       <div class="input-group">
         <label>USUARIO</label>
         <input type="text" id="adminUser" placeholder="Usuario">
@@ -131,17 +131,17 @@
   </div>
 
   <div id="adminPanelContainer">
-    <h2>🚀 PANEL DE CONTROL ADMIN</h2>
+    <h2>PANEL ADMIN</h2>
     <div class="admin-nav">
-      <button class="btn primary" onclick="mostrarSeccion('secAgregar')">➕ AGREGAR PRODUCTO</button>
-      <button class="btn secondary" onclick="mostrarSeccion('secModificar')">✏️ MODIFICAR PRODUCTO</button>
-      <button class="btn secondary" onclick="cerrarSesion()" style="background:#ff4d4d; color:white; border:none;">❌ SALIR</button>
+      <button class="btn primary" onclick="mostrarSeccion('secAgregar')">AGREGAR PRODUCTO</button>
+      <button class="btn secondary" onclick="mostrarSeccion('secModificar')">MODIFICAR PRODUCTO</button>
+      <button class="btn secondary" onclick="cerrarSesion()" style="background:#ff4d4d; color:white; border:none;">SALIR</button>
     </div>
 
     <div id="secAgregar" class="admin-section active">
-      <h3>➕ NUEVO PRODUCTO</h3>
+      <h3>NUEVO PRODUCTO</h3>
       <div class="admin-form-group">
-        <label>SELECCIONAR IMAGEN (Se subirá a Cloudinary automáticamente)</label>
+        <label>SELECCIONAR IMAGEN</label>
         <input type="file" id="addImgFile" accept="image/*">
       </div>
       <div class="admin-form-group">
@@ -149,7 +149,7 @@
         <input type="text" id="addTitulo" placeholder="Ej: ARO DE LUZ">
       </div>
       <div class="admin-form-group">
-        <label>DESCRIPCIÓN BREVE</label>
+        <label>DESCRIPCIÓN DEL PRODUCTO</label>
         <textarea id="addDesc" rows="3" placeholder="Para qué es el producto..."></textarea>
       </div>
       <div class="admin-form-group">
@@ -163,13 +163,13 @@
           <option value="no">❌ SIN STOCK</option>
         </select>
       </div>
-      <button class="btn primary" id="btnGuardarNuevo">💾 GUARDAR CAMBIOS</button>
+      <button class="btn primary" id="btnGuardarNuevo">GUARDAR CAMBIOS</button>
     </div>
 
     <div id="secModificar" class="admin-section">
-      <h3>✏️ MODIFICAR O BORRAR PRODUCTO</h3>
+      <h3>MODIFICAR O BORRAR PRODUCTO</h3>
       <div class="admin-form-group">
-        <label>SELECCIONA UN PRODUCTO DE LA BASE DE DATOS</label>
+        <label>SELECCIONA UN PRODUCTO</label>
         <select id="modSelectProd" onchange="cargarDatosModificar()">
           <option value="">-- Elegir producto --</option>
         </select>
@@ -199,8 +199,8 @@
             <option value="no">❌ SIN STOCK</option>
           </select>
         </div>
-        <button class="btn primary" id="btnGuardarMod">💾 GUARDAR PRODUCTO</button>
-        <button class="btn secondary" id="btnBorrarProd" style="background:#ff4d4d; color:white; border:none;">🗑️ BORRAR PRODUCTO</button>
+        <button class="btn primary" id="btnGuardarMod">GUARDAR PRODUCTO</button>
+        <button class="btn secondary" id="btnBorrarProd" style="background:#ff4d4d; color:white; border:none;">BORRAR PRODUCTO</button>
       </div>
     </div>
   </div>
@@ -283,14 +283,14 @@
       const pass = document.getElementById('adminPass').value;
       const remember = document.getElementById('rememberMe').checked;
 
-      if(user === 'admin' && pass === '2026') {
+      if(user === 'ironmel' && pass === '1234') {
         if(remember) localStorage.setItem('adminIronMel', 'true'); // Guardar sesión si se marcó recordarme
         document.getElementById('loginModal').style.display = 'none';
         document.getElementById('mainApp').style.display = 'none';
         document.getElementById('adminPanelContainer').style.display = 'block';
         cargarSelectModificar();
       } else {
-        alert("❌ ¡DATOS INCORRECTOS! INTENTÁ DE NUEVO.");
+        alert("¡DATOS INCORRECTOS!");
       }
     };
 
@@ -336,7 +336,7 @@
           <div class="title">${prod.nombre}</div>
           <div class="desc">${prod.resumen}</div>
           <div class="price">${txtPrecio} <br><small style="color:#555; font-size:11px;">${txtStock}</small></div>
-          <a href="https://wa.me/${whatsappNumber}?text=Hola!+quiero+consultar:+${prod.nombre}" class="btn primary" target="_blank">AVERIGUAR</a>
+          <a href="https://wa.me/${whatsappNumber}?text=Hola!+vengo+de+la+pagina!+quiero+consultar+por:+${prod.nombre}" class="btn primary" target="_blank">Lo quiero!</a>
         `;
         container.appendChild(card);
       });
@@ -372,13 +372,13 @@
     // GUARDAR NUEVO USANDO CLOUDINARY 💾
     document.getElementById('btnGuardarNuevo').addEventListener('click', async () => {
       const btn = document.getElementById('btnGuardarNuevo');
-      btn.innerText = "⏳ SUBIENDO IMAGEN...";
+      btn.innerText = "SUBIENDO IMAGEN...";
       try {
         // Subida automática a Cloudinary antes de guardar en Firestore
         let imgUrl = await uploadToCloudinary('addImgFile'); 
         
         // Si no se seleccionó imagen, usar una por defecto
-        if (!imgUrl) imgUrl = "https://i.postimg.cc/4NyTgDRM/LOGO-IRON-MEL.jpg";
+        if (!imgUrl) imgUrl = "https://i.postimg.cc/NFqG2R6W/Whats-App-Image-2026-06-08-at-21-48-55.jpg";
         
         const nuevoProd = {
           nombre: document.getElementById('addTitulo').value,
@@ -389,12 +389,12 @@
         };
 
         await addDoc(collection(db, "productos"), nuevoProd);
-        alert("✅ ¡PRODUCTO AGREGADO A LA BASE DE DATOS!");
+        alert("¡PRODUCTO AGREGADO!");
         location.reload();
       } catch(e) {
-        alert("❌ ERROR: " + e.message);
+        alert("ERROR: " + e.message);
       }
-      btn.innerText = "💾 GUARDAR CAMBIOS";
+      btn.innerText = "GUARDAR CAMBIOS";
     });
 
     // MODIFICAR USANDO CLOUDINARY ✏️
@@ -403,7 +403,7 @@
       const btn = document.getElementById('btnGuardarMod');
       const currentProd = productos.find(p => p.id === idSel);
       
-      btn.innerText = "⏳ ACTUALIZANDO...";
+      btn.innerText = "ACTUALIZANDO...";
       try {
         const prodRef = doc(db, "productos", idSel);
         
@@ -419,24 +419,24 @@
         };
 
         await updateDoc(prodRef, updateData);
-        alert("✅ ¡PRODUCTO MODIFICADO CON ÉXITO!");
+        alert("¡PRODUCTO MODIFICADO!!");
         location.reload();
       } catch(e) {
-        alert("❌ ERROR: " + e.message);
+        alert("ERROR: " + e.message);
       }
-      btn.innerText = "💾 GUARDAR PRODUCTO";
+      btn.innerText = "GUARDAR PRODUCTO";
     });
 
     // ELIMINAR 🗑️
     document.getElementById('btnBorrarProd').addEventListener('click', async () => {
       const idSel = document.getElementById('modSelectProd').value;
-      if(confirm("⚠️ ¿SEGURO QUE QUERÉS BORRAR ESTO?")) {
+      if(confirm("¿SEGURO QUE QUERÉS BORRAR ESTO?")) {
         try {
           await deleteDoc(doc(db, "productos", idSel));
-          alert("🗑️ ¡PRODUCTO ELIMINADO!");
+          alert("¡PRODUCTO ELIMINADO!");
           location.reload();
         } catch(e) {
-          alert("❌ ERROR AL BORRAR: " + e.message);
+          alert("ERROR AL BORRAR: " + e.message);
         }
       }
     });
